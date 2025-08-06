@@ -22,10 +22,11 @@ jobs:
       - name: Clean old content
         run: rm -rf css images scp series tale
 
-      - name: Mirror SCP dataset into root
+      - name: Mirror SCP dataset to repo root
         run: |
           wget -m -np -nH --cut-dirs=1 -R "index.html*" \
           https://scp-data.tedivm.com/ -P .
+
 
       - name: Show large files (optional)
         run: |
