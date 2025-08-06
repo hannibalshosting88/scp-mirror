@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Clean previous data
-rm -rf scp-data
-mkdir -p scp-data
+# Clean previous content
+rm -rf css images scp series tale
 
-# Mirror everything except large files
-wget -m -np -nH --cut-dirs=1 -R "index.html*" https://scp-data.tedivm.com/ -P ./scp-data
+# Mirror everything (no size restrictions!)
+wget -m -np -nH --cut-dirs=1 -R "index.html*" https://scp-data.tedivm.com/ -P .
 
-# Remove or move any file over 25MB (e.g. content_goi.json)
-find ./scp-data -type f -size +25M -delete
+# Optional: Print large file warnings
+echo "🔍 Large files detected:"
+find . -type f -size +25M -exec du -h {} +
