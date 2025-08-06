@@ -8,19 +8,27 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # 👈 REQUIRED for GITHUB_TOKEN to push
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
       - name: Install wget
         run: sudo apt-get install wget -y
+
       - name: Mirror SCP dataset
         run: |
           mkdir -p scp-data
           wget -m -np -nH --cut-dirs=1 -R "index.html*" https://scp-data.tedivm.com/ -P ./scp-data
+
       - name: Commit and push
         run: |
-          git config --global user.email "you@example.com"
+          git config --global user.email "mirror@scp.local"
           git config --global user.name "mirror-bot"
           git add .
-          git commit -m "Daily update" || echo "No changes"
-          git push
+          git diff-index --quiet HEAD || git commit -m "Daily update"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
 
