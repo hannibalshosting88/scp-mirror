@@ -37,7 +37,7 @@ jobs:
         run: |
           git config --global user.email "mirror@scp.local"
           git config --global user.name "mirror-bot"
-          git add .
-          git diff --quiet || git commit -m "Daily update"
+          git add -f .  # Force add even if ignored
+          git diff --cached --quiet || git commit -m "Daily update"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
 
