@@ -1,0 +1,26 @@
+name: Daily SCP Mirror
+
+on:
+  schedule:
+    - cron: "0 3 * * *"  # Runs daily at 3AM UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install wget
+        run: sudo apt-get install wget -y
+      - name: Mirror SCP dataset
+        run: |
+          mkdir -p scp-data
+          wget -m -np -nH --cut-dirs=1 -R "index.html*" https://scp-data.tedivm.com/ -P ./scp-data
+      - name: Commit and push
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "mirror-bot"
+          git add .
+          git commit -m "Daily update" || echo "No changes"
+          git push
+
